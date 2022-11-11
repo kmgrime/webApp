@@ -54,3 +54,8 @@ C:> py -m ensurepip --upgrade
 ```
 $ pip install streamlit
 ```
+
+## Deployment
+```
+$ az deployment sub create --template-file ./build/main.bicep --parameters 'build/parameters.dev.json' --location norwayeast --output jsonc
+```
