@@ -1,0 +1,31 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "appServicePlan": {
+            "value": {
+                "name": "webServerPlan",
+                "sku": {
+                        "name": "B1",
+                        "tier": "Basic"
+                    }
+                }
+        },
+        "resGroup": {
+            "value": {
+                "name": "webApp",
+                "tags": {
+                    "ApplicationName": "Website",
+                    "Description": "Website built with Python and Streamlit",
+                    "Environment": "Dev"
+                }
+            }
+        },
+        "webApp": {
+            "value": {
+                "name": "webapp-with-python",
+                "linuxFxVersion": "DOCKER|mcr.microsoft.com/appsvc/staticsite:latest"
+            }
+        }
+    }
+}
