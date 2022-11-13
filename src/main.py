@@ -1,10 +1,14 @@
+import altair as alt
+import math
+import pandas as pd
+
 from PIL import Image
 import streamlit as st
 
 st.set_page_config(page_title="Webpage101", page_icon=":coffee:", layout="wide")
 
 # assets
-img_code = Image.open("../images/code.jpg")
+img_code = Image.open("/images/code.jpg")
 
 # HEADER
 with st.container():

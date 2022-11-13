@@ -4,7 +4,13 @@ FROM python:3.9-slim
 
 EXPOSE 8501
 
-WORKDIR /app
+RUN mkdir /src
+RUN mkdir /src/images
+WORKDIR /src
+ADD /src/requirements.txt /src/
+ADD ./src/main.py /src/
+ADD ./images/code.jpg /src/images/
+
 
 RUN apt-get update && apt-get install -y \
     build-essential \
@@ -12,8 +18,6 @@ RUN apt-get update && apt-get install -y \
     git \
     && rm -rf /var/lib/apt/lists/*
 
-RUN COPY ./src/ .
-
 RUN pip3 install -r requirements.txt
 
-ENTRYPOINT ["streamlit", "run", "streamlit_app.py", "--server.port=8501", "--server.address=0.0.0.0"]
+ENTRYPOINT ["streamlit", "run", "main.py", "--server.port=8501", "--server.address=0.0.0.0"]
