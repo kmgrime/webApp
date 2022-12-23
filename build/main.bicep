@@ -1,37 +1,37 @@
 targetScope = 'subscription'
 
-// parameters
-param appServicePlan object
-param resGroup object
-param webApp object
-param location string = deployment().location
-
-// resourceGroup
-resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: resGroup.name
-  location: location
-  tags: resGroup.tags
+resource rg 'Microsoft.Resources/resourceGroups@2022-09-01' = {
+  name: 'appRG'
+  location: deployment().location
 }
 
-// appPlan
-module appPlan 'modules/appServicePlan.bicep' = {
+module appPlanDeploy 'modules/appPlan.bicep' = {
+  name: 'appPlanDeploy'
   scope: rg
-  name: appServicePlan.name
   params: {
-    appServicePlanNameParam: appServicePlan.name
-    appServicePlanSkuParam: appServicePlan.sku
-    environmentParam: resGroup.tags.Environment
+    appServicePlanNameParam: 'appPlanWork'
+    environmentParam: 'dev'
   }
 }
 
-// webApp
-module app 'modules/webApp.bicep' = {
-  scope: rg
-  name: webApp.name
-  params: {
-    appServicePlanIdParam: appPlan.outputs.aspId
-    environmentParam: resGroup.tags.Environment
-    linuxFxVersionParam: webApp.linuxFxVersion
-    webAppNameParam: webApp.name
+var websites = [
+  {
+    name: 'uisite123'
+    tag: 'latest'
   }
-}
+  {
+    name: 'plaintextsite123'
+    tag: 'plain-text'
+  }
+]
+
+module siteDeploy 'modules/site.bicep' = [for site in websites: {
+  scope: rg
+  name: '${site.name}siteDeploy'
+  params: {
+    appPlanId: appPlanDeploy.outputs.PlanId
+    dockerImage: 'nginxdemos/hello'
+    dockerImageTag: site.tag
+    sitename: site.name
+  }
+}]
