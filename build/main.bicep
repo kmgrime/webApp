@@ -1,14 +1,17 @@
 targetScope = 'subscription'
 
+param location string = 'swedencentral'
+
 resource rg 'Microsoft.Resources/resourceGroups@2022-09-01' = {
   name: 'appRG'
-  location: deployment().location
+  location: location
 }
 
 module appPlanDeploy 'modules/appPlan.bicep' = {
   name: 'appPlanDeploy'
   scope: rg
   params: {
+    location: location
     appServicePlanNameParam: 'appPlanWork'
     environmentParam: 'dev'
   }
@@ -29,6 +32,7 @@ module siteDeploy 'modules/site.bicep' = [for site in websites: {
   scope: rg
   name: '${site.name}siteDeploy'
   params: {
+    location: location
     appPlanId: appPlanDeploy.outputs.PlanId
     dockerImage: 'nginxdemos/hello'
     dockerImageTag: site.tag
